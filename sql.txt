@@ -1,0 +1,55 @@
+Задание 1 ----------------------------------------------------------------------
+
+SELECT 
+    s.supplier
+FROM
+    Suppliers s
+WHERE
+    (SELECT 
+            SUM(a.qty * a.price)
+        FROM
+            Actions a
+        WHERE
+            YEAR(a.action_date) = 2016
+                AND a.supplier_id = s.id) > (SELECT 
+            SUM(a.qty * a.price)
+        FROM
+            Actions a
+                JOIN
+            Suppliers s ON a.supplier_id = s.id
+        WHERE
+            YEAR(a.action_date) = 2016
+                AND s.supplier = 'IDT');
+
+Задание 2 ----------------------------------------------------------------------
+
+SELECT 
+    p.product
+FROM
+    Products p
+WHERE
+    p.id NOT IN (SELECT DISTINCT
+            a.product_id
+        FROM
+            Actions a
+                JOIN
+            Suppliers s ON a.supplier_id = s.id
+        WHERE
+            s.supplier = 'IDT');
+
+Задание 3 ----------------------------------------------------------------------
+
+SELECT DISTINCT
+    c.category
+FROM
+    Categories c
+        JOIN
+    Products p ON c.id = p.category_id
+        JOIN
+    Actions a ON p.id = a.product_id
+        JOIN
+    Suppliers s ON a.supplier_id = s.id
+WHERE
+    s.supplier = 'IDT'
+        AND YEAR(a.action_date) = 2016
+        AND MONTH(a.action_date) BETWEEN 6 AND 8;
